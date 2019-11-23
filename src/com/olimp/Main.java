@@ -1,53 +1,63 @@
 package com.olimp;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Scanner;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 
-public class Main {
-    final static boolean USE_LOCAL_FILE = true;
+/**
+ * You are given a node that is the beginning of a linked list. This list always contains a tail and a loop.
+ * Your objective is to determine the length of the loop.
+ *
+ *   Non-looping lists
+ *     ✓ should return 0 when no list is provided
+ *     ✓ should return 0 when a single node is provided
+ *     ✓ should return 0 when a non-looping list is provided
+ *
+ *   Lists with a loop and a tail
+ *     ✓ should parse the tail and return 1 for the Selfie loop
+ *     ✓ should return 7 for a list of 8 nodes, 7 of which are in a loop
+ *     ✓ should return 5 for a list of 8 nodes, 5 of which are in a loop
+ *
+ *   Fully looped lists
+ *     ✓ should return 1 for a self-referencing node
+ *     ✓ should return 4 for a list of 4 nodes, all of which are in a loop
+ */
 
-    public static void main(String[] args) throws java.lang.Exception {
-        InputStream is;
-        if (USE_LOCAL_FILE) {
-            is = new FileInputStream("test.txt");
-        } else {
-            is = System.in;
-        }
-        Scanner in = new Scanner(is);
-        final int TEST_CASE_NUM = in.nextInt();
-        String[] testCases = new String[TEST_CASE_NUM];
-        in.nextLine();
-        for (int i = 0; i < TEST_CASE_NUM; i++) {
-            testCases[i] = in.nextLine();
-        }
-        for (int i = 0; i < TEST_CASE_NUM; i++) {
-            String w = testCases[i];
-//            System.out.printf("direct = %s is inverse = %s", w, "" + inverseDna(w));
-            if (i < TEST_CASE_NUM - 1) {
-                // add empty line after each test case
-                System.out.println();
-            }
-        }
+public class Main {
+
+    public static void main(String[] args) {
         Tests();
     }
 
-    public static String makeReadable(int seconds) {
-        int ss = seconds % 60;
-        int mm = seconds / 60;
-        int hh = mm / 60;
-        mm -= hh * 60;
-        return String.format("%02d:%02d:%02d" , hh, mm, ss);
+    private static void Tests() {
+        assertEquals("", "", "");
     }
 
-    public static void Tests() {
-        assertEquals("makeReadable(0)", "00:00:00", makeReadable(0));
-        assertEquals("makeReadable(5)", "00:00:05", makeReadable(5));
-        assertEquals("makeReadable(60)", "00:01:00", makeReadable(60));
-        assertEquals("makeReadable(86399)", "23:59:59", makeReadable(86399));
-        assertEquals("makeReadable(359999)", "99:59:59", makeReadable(359999));
+    public static class LoopInspector {
+
+        public int loopSize(Node node) {
+            if (node == null || node.getNext() == null) {
+                return 0;
+            }
+            HashSet<Node> visitedNodes = new HashSet<>();
+            Node lastNode = node;
+            do {
+                visitedNodes.add(lastNode);
+                lastNode = lastNode.getNext();
+                if (lastNode == null) {
+                    return 0; //we don't have loops
+                }
+            } while (!visitedNodes.contains(lastNode));
+
+            int visitedCounter = 0;
+            Node circleStart = lastNode;
+            do {
+                lastNode = lastNode.getNext();
+                visitedCounter++;
+            } while (circleStart != lastNode);
+            return visitedCounter;
+        }
+
     }
 
 }
