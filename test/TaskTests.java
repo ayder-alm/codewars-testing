@@ -1,12 +1,13 @@
+import com.olimp.Main.Parser;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class TaskTests {
-        @Test
-        public void test1() {
-            int a = 2 + 2;
-            int b = 4;
-            assertEquals(true, a == b);
-        }
+    @Test
+    public void fixedTests() {
+        assertEquals(1 , Parser.parseInt("one"));
+        assertEquals(20 , Parser.parseInt("twenty"));
+        assertEquals(246 , Parser.parseInt("two hundred forty-six"));
+    }
 }
